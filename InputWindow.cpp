@@ -10,8 +10,8 @@ InputWindow::InputWindow()
 {
 	x = 0;
 	y = 0;
-	w = 1600;
-	h = 1200;
+	w = 2560;
+	h = 1440;
 	initWindow();
 }
 
@@ -76,7 +76,7 @@ bool InputWindow::enableAlpha()
 
 void InputWindow::show()
 {
-    SetTimer(hwnd, 1001, 20, NULL);
+    //SetTimer(hwnd, 1001, 20, NULL);
     ShowWindow(hwnd, SW_SHOW);
     UpdateWindow(hwnd);
 }
@@ -156,30 +156,10 @@ void InputWindow::paint()
     HDC hdc = BeginPaint(hwnd, &ps);
     BLImageData data;
     img->getData(&data);
+    //LONG dirtyX{ ps.rcPaint.left }, dirtyY{ ps.rcPaint.top },
+    //dirtyW{ ps.rcPaint.right - ps.rcPaint.left },
+    //dirtyH{ ps.rcPaint.bottom - ps.rcPaint.top };
     BITMAPINFO bmi = { sizeof(BITMAPINFOHEADER), w, -h, 1, 32, BI_RGB, w * 4 * h, 0, 0, 0, 0 };
     SetDIBitsToDevice(hdc, 0, 0, w, h, 0, 0, 0, h, data.pixelData, &bmi, DIB_RGB_COLORS);
-    //LONG dirtyX{ ps.rcPaint.left }, dirtyY{ ps.rcPaint.top },
-    //    dirtyW{ ps.rcPaint.right - ps.rcPaint.left },
-    //    dirtyH{ ps.rcPaint.bottom - ps.rcPaint.top };
-    //HDC hdcTemp = CreateCompatibleDC(hdc);
-    //HBITMAP hbmMem = CreateCompatibleBitmap(hdc, dirtyW, dirtyH);
-    //HANDLE hOld = SelectObject(hdcTemp, hbmMem);
-    //BITMAPINFO bmi = { sizeof(BITMAPINFOHEADER), w, -h, 1, 32, BI_RGB, w * 4 * h, 0, 0, 0, 0 };
-    //StretchDIBits(hdcTemp, 0, 0, dirtyW, dirtyH, dirtyX, dirtyY, dirtyW, dirtyH, data.pixelData, &bmi, DIB_RGB_COLORS, SRCCOPY);
-    //BitBlt(hdc, dirtyX, dirtyY, dirtyW, dirtyH, hdcTemp, 0, 0, SRCCOPY);
-    //SelectObject(hdcTemp, hOld);
-    //DeleteObject(hbmMem);
-    //DeleteDC(hdcTemp);
-
-    //BITMAPINFO bmi = { sizeof(BITMAPINFOHEADER), dirtyW, -dirtyH, 1, 32, BI_RGB, dirtyW * 4 * dirtyH, 0, 0, 0, 0 };
-    //SetDIBitsToDevice(hdc, dirtyX, dirtyY, dirtyW, dirtyH, 0, 0, 0, dirtyH, data.pixelData, &bmi, DIB_RGB_COLORS);
-    //StretchDIBits(hdc,
-    //    dirtyX, dirtyY, dirtyW, dirtyH,
-    //    dirtyX, dirtyY, dirtyW, dirtyH,
-    //    data.pixelData,
-    //    &bmi,
-    //    DIB_RGB_COLORS,
-    //    SRCCOPY 
-    //);
     EndPaint(hwnd, &ps);
 }
