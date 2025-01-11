@@ -8,10 +8,9 @@
 
 InputWindow::InputWindow()
 {
-	x = 0;
-	y = 0;
-	w = 2560;
-	h = 1440;
+	x = 0; y = 0;
+	w = 2560; h = 1000;
+    initFont();
 	initWindow();
 }
 
@@ -39,8 +38,13 @@ void InputWindow::initWindow()
     SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
     img = std::make_unique<BLImage>(w, h, BL_FORMAT_PRGB32);
     BLContext ctx(*img.get());
+    ctx.setRenderingQuality(BL_RENDERING_QUALITY_MAX_VALUE);
     ctx.clearAll();
-    ctx.fillAll(BLRgba32(0x66B83E52));
+    ctx.fillAll(BLRgba32(0xFFFFFFFF));
+    const char regularText[] = "Hello Blend2D!";
+    BLPoint pos(250, 80);
+    ctx.setFillStyle(BLRgba32(0xFF000000));
+    ctx.fillUtf8Text(pos, *font.get(), regularText);
 }
 
 bool InputWindow::enableAlpha()
@@ -148,6 +152,18 @@ LRESULT InputWindow::processWinMsg(UINT msg, WPARAM wParam, LPARAM lParam)
         //InvalidateRect(hwnd, &rect, false);
     }
     return DefWindowProc(hwnd, msg, wParam, lParam);
+}
+
+void InputWindow::initFont()
+{
+    BLFontFace face;
+    BLResult err = face.createFromFile("C:\\Windows\\Fonts\\msyh.ttc"); //黑体
+    if (err) {
+        printf("Failed to load a font face (err=%u)\n", err);
+        return;
+    }
+    font = std::make_unique<BLFont>();
+    font->createFromFace(face, fontSize);
 }
 
 void InputWindow::paint()

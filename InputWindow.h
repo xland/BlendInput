@@ -8,6 +8,7 @@ public:
 	~InputWindow();
 	void show();
 private:
+	void initFont();
 	void paint();
 	void initWindow();
 	bool enableAlpha();
@@ -17,5 +18,8 @@ private:
 	int x, y, w, h;
 	HWND hwnd;
 	std::unique_ptr<BLImage> img;
+	bool caretVisible{ true };
+	float fontSize{ 12 };
+	std::unique_ptr<BLFont> font;
 };
 
