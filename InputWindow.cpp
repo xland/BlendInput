@@ -36,15 +36,16 @@ void InputWindow::initWindow()
     hwnd = CreateWindowEx(NULL, wcx.lpszClassName, wcx.lpszClassName, WS_POPUP, x, y, w, h, NULL, NULL, hinstance, static_cast<LPVOID>(this));
     enableAlpha();
     SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
-    img = std::make_unique<BLImage>(w, h, BL_FORMAT_PRGB32);
+    img = std::make_unique<BLImage>(w * 1.5, h * 1.5, BL_FORMAT_PRGB32);
     BLContext ctx(*img.get());
-    ctx.setRenderingQuality(BL_RENDERING_QUALITY_MAX_VALUE);
     ctx.clearAll();
     ctx.fillAll(BLRgba32(0xFFFFFFFF));
     const char regularText[] = "Hello Blend2D!";
     BLPoint pos(250, 80);
     ctx.setFillStyle(BLRgba32(0xFF000000));
     ctx.fillUtf8Text(pos, *font.get(), regularText);
+    ctx.end();
+    img->writeToFile("allen123.png");
 }
 
 bool InputWindow::enableAlpha()
@@ -176,6 +177,21 @@ void InputWindow::paint()
     //dirtyW{ ps.rcPaint.right - ps.rcPaint.left },
     //dirtyH{ ps.rcPaint.bottom - ps.rcPaint.top };
     BITMAPINFO bmi = { sizeof(BITMAPINFOHEADER), w, -h, 1, 32, BI_RGB, w * 4 * h, 0, 0, 0, 0 };
-    SetDIBitsToDevice(hdc, 0, 0, w, h, 0, 0, 0, h, data.pixelData, &bmi, DIB_RGB_COLORS);
+    //SetDIBitsToDevice(hdc, 0, 0, w, h, 0, 0, 0, h, data.pixelData, &bmi, DIB_RGB_COLORS);
+    StretchDIBits(
+        hdc,          // 目标设备上下文句柄
+        0,        // 目标矩形左上角的 x 坐标
+        0,        // 目标矩形左上角的 y 坐标
+        w,    // 目标矩形的宽度
+        h,   // 目标矩形的高度
+        0,         // 源矩形左上角的 x 坐标
+        0,         // 源矩形左上角的 y 坐标
+        w,     // 源矩形的宽度
+        h,    // 源矩形的高度
+        data.pixelData,      // 指向位图像素数据的指针
+        &bmi, // 指向位图信息结构的指针
+        DIB_RGB_COLORS,       // 调色板的使用方式
+        SRCCOPY           // 栅格操作码
+    );
     EndPaint(hwnd, &ps);
 }

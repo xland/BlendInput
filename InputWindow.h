@@ -19,7 +19,7 @@ private:
 	HWND hwnd;
 	std::unique_ptr<BLImage> img;
 	bool caretVisible{ true };
-	float fontSize{ 12 };
+	float fontSize{ 26 };
 	std::unique_ptr<BLFont> font;
 };
 
